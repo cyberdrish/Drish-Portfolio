@@ -1,6 +1,4 @@
-import { Description } from "@radix-ui/react-toast";
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
-import { useState } from "react";
 import useTheme from "../context/useTheme";
 
 const projects = [

@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useEffect, useState, type ReactNode } from "react";
 
 const ThemeContext = createContext<
   | {
@@ -46,4 +40,4 @@ function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export { ThemeProvider, ThemeContext };
+export { ThemeContext, ThemeProvider };
