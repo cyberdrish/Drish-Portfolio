@@ -6,7 +6,7 @@ const projects = [
     id: 1,
     title: "Hotel booking website",
     description:
-      " A streamlined hotel room booking site where guests choose dates and party size, see real-time availability, bookings, and analytics via a Guest dashboard.",
+      "A streamlined hotel room booking site where guests choose dates and party size, see real-time availability, bookings, and analytics via a Guest dashboard.",
     imageLight: "/projects/project1_light.png",
     imageDark: "/projects/project1_dark.png",
     tags: [
@@ -36,7 +36,7 @@ const projects = [
       "React-router-dom",
       "React-hook-form",
     ],
-    demoUrl: "https://hotelbookingmanager.netlify.app/login",
+    demoUrl: "https://hotelbookingmanager.netlify.app/",
     githubUrl: "https://github.com/cyberdrish/hotel_manager",
   },
   {
