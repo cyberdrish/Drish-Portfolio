@@ -4,7 +4,7 @@ import useTheme from "../context/useTheme";
 const projects = [
   {
     id: 1,
-    title: "SaaS Landing page",
+    title: "Hotel booking website",
     description:
       " Interactive analytics dashboard with data visualisation and filtering capabilities",
     imageLight: "/projects/project1_light.png",
@@ -41,7 +41,7 @@ const projects = [
   },
   {
     id: 3,
-    title: "SaaS Landing page",
+    title: "Order Food online",
     description:
       " Interactive analytics dashboard with data visualisation and filtering capabilities",
     imageLight: "/projects/project3_light.png",
