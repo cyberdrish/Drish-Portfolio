@@ -6,7 +6,7 @@ const projects = [
     id: 1,
     title: "Hotel booking website",
     description:
-      " Interactive analytics dashboard with data visualisation and filtering capabilities",
+      " A streamlined hotel room booking site where guests choose dates and party size, see real-time availability, bookings, and analytics via a Guest dashboard.",
     imageLight: "/projects/project1_light.png",
     imageDark: "/projects/project1_dark.png",
     tags: [
@@ -24,7 +24,7 @@ const projects = [
     id: 2,
     title: "Hotel Management",
     description:
-      " Interactive analytics dashboard with data visualisation and filtering capabilities",
+      "Hotel Booking Manager login portal for staff to access the management dashboard: authenticate securely, view and manage bookings, update room availability and rates, and handle user accounts and admin tasks.",
     imageLight: "/projects/project2_light.png",
     imageDark: "/projects/project2_dark.png",
     tags: [
@@ -43,7 +43,7 @@ const projects = [
     id: 3,
     title: "Order Food online",
     description:
-      " Interactive analytics dashboard with data visualisation and filtering capabilities",
+      "An online restaurant ordering site to browse the menu, customize dishes, add items to cart, and place secure orders for pickup or delivery, with real-time order updates and streamlined checkout.",
     imageLight: "/projects/project3_light.png",
     imageDark: "/projects/project3_dark.png",
     tags: ["react", "tailwind css", "Open Api", "lucide-react", "vite"],
