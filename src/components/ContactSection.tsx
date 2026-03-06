@@ -1,3 +1,4 @@
+import emailjs from "@emailjs/browser";
 import {
   Github,
   Instagram,
@@ -7,33 +8,67 @@ import {
   Phone,
   Send,
 } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
-export const ContactSection = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+// ── EmailJS Configuration ─────────────────────────────────────────────
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+// ──────────────────────────────────────────────────────────────────────
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const MAX_MESSAGE_LENGTH = 500;
+
+export const ContactSection = () => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [messageLength, setMessageLength] = useState(0);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    toast(
-      <div>
-        <strong>Message Sent!</strong>
-        <br />
-        Thank you for your message. I'll get back to you soon.
-      </div>,
-      {
+
+    const formData = new FormData(formRef.current!);
+    const email = formData.get("email") as string;
+    const message = formData.get("message") as string;
+
+    if (!EMAIL_REGEX.test(email)) {
+      toast.warn("Please enter a valid email address.", {
         position: "bottom-right",
-        autoClose: 1500,
-        hideProgressBar: true,
-        closeOnClick: false,
-        progress: undefined,
+        autoClose: 3000,
         theme: "dark",
-      }
-    );
-    setTimeout(() => {
+      });
+      return;
+    }
+
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      toast.warn(`Message must be under ${MAX_MESSAGE_LENGTH} characters.`, {
+        position: "bottom-right",
+        autoClose: 3000,
+        theme: "dark",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current!, PUBLIC_KEY);
+      toast.success("Message sent! I'll get back to you soon.", {
+        position: "bottom-right",
+        autoClose: 3000,
+        theme: "dark",
+      });
+      formRef.current!.reset();
+    } catch {
+      toast.error("Something went wrong. Please try again.", {
+        position: "bottom-right",
+        autoClose: 3000,
+        theme: "dark",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -124,7 +159,7 @@ export const ContactSection = () => {
           </div>
           <div className="bg-card p-8 rounded-lg shadow-xs">
             <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
-            <form className="space-y-6" onSubmit={(e) => handleSubmit(e)}>
+            <form ref={formRef} className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="name"
@@ -172,10 +207,15 @@ export const ContactSection = () => {
                   id="message"
                   name="message"
                   required
+                  maxLength={MAX_MESSAGE_LENGTH}
+                  onChange={(e) => setMessageLength(e.target.value.length)}
                   className="w-full px-4 py-3 rounded-md border
                  bg-background focus:outline-hidden focus:ring-1 focus:ring-primary resize-none"
                   placeholder=" Hello, I'd like to talk about..."
                 />
+                <p className="text-xs text-muted-foreground text-right mt-1">
+                  {messageLength}/{MAX_MESSAGE_LENGTH}
+                </p>
               </div>
               <button
                 type="submit"
