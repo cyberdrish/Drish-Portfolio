@@ -9,9 +9,21 @@ const ThemeContext = createContext<
 >(undefined);
 
 function ThemeProvider({ children }: { children: ReactNode }) {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme === "light") {
+      document.documentElement.classList.remove("dark");
+      setIsDarkMode(false);
+    } else {
+      document.documentElement.classList.add("dark");
+      setIsDarkMode(true);
+      if (!storedTheme) {
+        localStorage.setItem("theme", "dark");
+      }
+    }
+    /* Original code:
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme === "dark") {
       document.documentElement.classList.add("dark");
@@ -20,6 +32,7 @@ function ThemeProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("theme", "light");
       setIsDarkMode(false);
     }
+    */
   }, []);
 
   const toggleTheme = () => {
