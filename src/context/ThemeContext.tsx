@@ -1,53 +1,69 @@
 import { createContext, useEffect, useState, type ReactNode } from "react";
 
+type AccentTheme = "purple" | "blue";
+
+const getInitialTheme = () => {
+  try {
+    return localStorage.getItem("theme") !== "light";
+  } catch {
+    return true;
+  }
+};
+
+const getInitialAccent = (): AccentTheme => {
+  try {
+    return localStorage.getItem("accent-theme") === "blue"
+      ? "blue"
+      : "purple";
+  } catch {
+    return "purple";
+  }
+};
+
 const ThemeContext = createContext<
   | {
       isDarkMode: boolean;
+      accentTheme: AccentTheme;
       toggleTheme: () => void;
+      toggleAccentTheme: () => void;
     }
   | undefined
 >(undefined);
 
 function ThemeProvider({ children }: { children: ReactNode }) {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(getInitialTheme);
+  const [accentTheme, setAccentTheme] = useState<AccentTheme>(getInitialAccent);
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme === "light") {
-      document.documentElement.classList.remove("dark");
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.add("dark");
-      setIsDarkMode(true);
-      if (!storedTheme) {
-        localStorage.setItem("theme", "dark");
-      }
+    document.documentElement.classList.toggle("dark", isDarkMode);
+    document.documentElement.classList.toggle(
+      "accent-blue",
+      accentTheme === "blue"
+    );
+    document.documentElement.style.colorScheme = isDarkMode ? "dark" : "light";
+
+    try {
+      localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+      localStorage.setItem("accent-theme", accentTheme);
+    } catch {
+      // The selected theme still works when storage is unavailable.
     }
-    /* Original code:
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme === "dark") {
-      document.documentElement.classList.add("dark");
-      setIsDarkMode(true);
-    } else {
-      localStorage.setItem("theme", "light");
-      setIsDarkMode(false);
-    }
-    */
-  }, []);
+  }, [accentTheme, isDarkMode]);
 
   const toggleTheme = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      setIsDarkMode(true);
-    }
+    setIsDarkMode((currentMode) => !currentMode);
   };
+
+  const toggleAccentTheme = () => {
+    setAccentTheme((currentAccent) =>
+      currentAccent === "purple" ? "blue" : "purple"
+    );
+  };
+
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider
+      value={{ isDarkMode, accentTheme, toggleTheme, toggleAccentTheme }}
+    >
       {children}
     </ThemeContext.Provider>
   );

@@ -1,10 +1,11 @@
 import { Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 
 const navItems = [
   { name: "Home", href: "#hero" },
   { name: "About", href: "#about" },
+  { name: "Experience", href: "#experience" },
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
   { name: "Contact", href: "#contact" },
@@ -13,46 +14,111 @@ const navItems = [
 export const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileNavigationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScrolled = () => {
       setIsScrolled(window.scrollY > 10);
     };
 
-    window.addEventListener("scroll", handleScrolled);
+    handleScrolled();
+    window.addEventListener("scroll", handleScrolled, { passive: true });
     return () => window.removeEventListener("scroll", handleScrolled);
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
+    const desktopQuery = window.matchMedia("(min-width: 768px)");
+    const closeMenuAtDesktopBreakpoint = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setIsMenuOpen(false);
+        menuButtonRef.current?.blur();
+      }
+    };
+
+    desktopQuery.addEventListener("change", closeMenuAtDesktopBreakpoint);
+    return () =>
+      desktopQuery.removeEventListener("change", closeMenuAtDesktopBreakpoint);
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const navigation = mobileNavigationRef.current;
+
+    document.body.style.overflow = "hidden";
+    navigation?.querySelector<HTMLAnchorElement>("a")?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+        window.requestAnimationFrame(() => menuButtonRef.current?.focus());
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusableElements = [
+        menuButtonRef.current,
+        ...(navigation?.querySelectorAll<HTMLAnchorElement>("a") ?? []),
+      ].filter(
+        (element): element is HTMLAnchorElement | HTMLButtonElement =>
+          element !== null
+      );
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements.at(-1);
+      if (!firstElement || !lastElement) return;
+
+      const currentIndex = focusableElements.findIndex(
+        (element) => element === document.activeElement
+      );
+      const nextIndex = event.shiftKey
+        ? currentIndex <= 0
+          ? focusableElements.length - 1
+          : currentIndex - 1
+        : currentIndex < 0 || currentIndex === focusableElements.length - 1
+          ? 0
+          : currentIndex + 1;
+
+      event.preventDefault();
+      focusableElements[nextIndex]?.focus();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isMenuOpen]);
 
   return (
     <nav
       className={`fixed w-full z-40 transition-all duration-50 ${
         isScrolled && !isMenuOpen
-          ? "py-3 bg-background/10 backdrop-blur-xs shadow-2xl"
+          ? "border-b border-border/60 bg-background/85 py-3 shadow-sm backdrop-blur-xl"
           : "py-5"
       }`}
     >
-      <div className="container flex items-center justify-between">
+      <div className="container flex h-10 items-center justify-between">
         <a
-          className="text-xl font-bold text-primary flex items-center"
+          className="flex h-10 shrink-0 items-center text-xl font-bold text-primary"
           href="#hero"
         >
           <span className="relative z-10">
-            <span className="text-glow text-foreground"> DrishDev </span>{" "}
-            Portpholio
+            <span className="text-glow text-foreground">DrishDev</span>
+            <span className="hidden min-[360px]:inline"> Portfolio</span>
           </span>
         </a>
-        <div className="flex">
+        <div className="flex h-10 items-center">
           {/* desktop version */}
-          <div className="hidden md:flex space-x-8">
-            {navItems.map((item, key) => (
+          <div className="hidden h-10 items-center md:flex">
+            {navItems.map((item) => (
               <a
-                key={key}
+                key={item.href}
                 href={item.href}
-                className="text-foreground/80 hover:text-primary transition-colors duration-300"
+                className="inline-flex h-10 items-center px-3 text-foreground/80 transition-colors duration-300 hover:text-primary lg:px-4"
               >
                 {item.name}
               </a>
@@ -60,10 +126,13 @@ export const NavBar = () => {
           </div>
           {/* mobile version */}
           <button
+            ref={menuButtonRef}
+            type="button"
             onClick={() => setIsMenuOpen((val) => !val)}
-            className="md:hidden p-2 text-foreground z-50"
+            className="z-50 inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden"
             aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
             aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -71,6 +140,12 @@ export const NavBar = () => {
           <ThemeToggle />
 
           <div
+            ref={mobileNavigationRef}
+            id="mobile-navigation"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
+            aria-hidden={!isMenuOpen}
             className={`fixed inset-0 bg-background/30 backdrop-blur-md z-40 flex flex-col items-center justify-center transition-all duration-300 md:hidden ${
               isMenuOpen
                 ? "opacity-100 pointer-events-auto"
@@ -78,10 +153,11 @@ export const NavBar = () => {
             }`}
           >
             <div className="flex flex-col space-y-8 text-xl">
-              {navItems.map((item, key) => (
+              {navItems.map((item) => (
                 <a
-                  key={key}
+                  key={item.href}
                   href={item.href}
+                  tabIndex={isMenuOpen ? 0 : -1}
                   className="text-foreground/80 hover:text-primary transition-colors duration-300"
                   onClick={() => setIsMenuOpen(false)}
                 >

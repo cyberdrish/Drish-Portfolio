@@ -4,9 +4,10 @@ import useTheme from "../context/useTheme";
 const projects = [
   {
     id: 1,
-    title: "Hotel booking website",
+    title: "Hotel Booking Website",
     description:
-      "A streamlined hotel room booking site where guests choose dates and party size, see real-time availability, bookings, and analytics via a Guest dashboard.",
+      "A guest-facing reservation product with date selection, party sizing, availability checks, bookings, and a responsive dashboard experience.",
+    impact: "API-driven reservations and reusable booking UI",
     imageLight: "/projects/project1_light.png",
     imageDark: "/projects/project1_dark.png",
     tags: [
@@ -24,7 +25,8 @@ const projects = [
     id: 2,
     title: "Hotel Management",
     description:
-      "Hotel Booking Manager login portal for staff to access the management dashboard: authenticate securely, view and manage bookings, update room availability and rates, and handle user accounts and admin tasks.",
+      "A staff dashboard for secure login, booking operations, room inventory, pricing updates, account workflows, and visual business reporting.",
+    impact: "Dashboard workflows, auth, charts, and admin UX",
     imageLight: "/projects/project2_light.png",
     imageDark: "/projects/project2_dark.png",
     tags: [
@@ -41,9 +43,10 @@ const projects = [
   },
   {
     id: 3,
-    title: "Order Food online",
+    title: "Restaurant Food Order",
     description:
-      "An online restaurant ordering site to browse the menu, customize dishes, add items to cart, and place secure orders for pickup or delivery, with real-time order updates and streamlined checkout.",
+      "A customer ordering flow with menu browsing, cart management, checkout, dynamic UI states, and external API integration.",
+    impact: "Responsive commerce flow with clean state handling",
     imageLight: "/projects/project3_light.png",
     imageDark: "/projects/project3_dark.png",
     tags: ["react", "tailwind css", "Open Api", "lucide-react", "vite"],
@@ -57,36 +60,42 @@ export const ProjectsSection = () => {
 
   return (
     <section id="projects" className="py-24 px-4 relative">
-      <div className="container mx-auto max-w-5xl">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-          Featured <span className="text-primary">Projects</span>
-        </h2>
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Here are some of my recent projects. Each project was carefully
-          crafted with attention to detail, performance and user experience.
-        </p>
+      <div className="container mx-auto max-w-6xl">
+        <div className="mx-auto mb-12 max-w-3xl text-center">
+          <div className="section-kicker mx-auto mb-4">Selected work</div>
+          <h2 className="text-3xl md:text-4xl font-bold">
+            Projects built around{" "}
+            <span className="text-primary">real product workflows</span>
+          </h2>
+          <p className="mt-5 text-muted-foreground">
+            Dashboard workflows, authentication, API-driven experiences, state
+            management, responsive UI, and production deployment in practice.
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, key) => (
+          {projects.map((project) => (
             <div
-              key={key}
-              className="group bg-card/90 rounded-lg overflow-hidden shadow-md card-hover"
+              key={project.id}
+              className="group project-card overflow-hidden card-hover"
             >
-              <div className="h-48 overflow-hidden">
+              <div className="relative h-52 overflow-hidden">
                 <img
                   src={
                     isDarkMode === true ? project.imageDark : project.imageLight
                   }
                   alt={project.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 shadow-2xl"
                 />
+                <div className="absolute inset-x-3 bottom-3 rounded-md border border-white/15 bg-black/55 px-3 py-2 text-left text-sm text-white backdrop-blur-md">
+                  {project.impact}
+                </div>
               </div>
               <div className="p-6">
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag, key) => (
-                    <span
-                      key={key}
-                      className="px-2 py-1 text-sm font-medium border rounded-full bg-primary/10 text-foreground"
-                    >
+                  {project.tags.map((tag) => (
+                    <span key={tag} className="resume-chip">
                       {tag}
                     </span>
                   ))}
@@ -99,13 +108,18 @@ export const ProjectsSection = () => {
                   <a
                     href={project.demoUrl}
                     target="_blank"
-                    className="text-foreground/20 hover:text-primary transition-colors duration-300"
+                    rel="noreferrer"
+                    aria-label={`Open ${project.title} live demo`}
+                    className="icon-link"
                   >
                     <ExternalLink size={20} />
                   </a>
                   <a
                     href={project.githubUrl}
-                    className="text-foreground/20 hover:text-primary transition-colors duration-300"
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Open ${project.title} GitHub repository`}
+                    className="icon-link"
                   >
                     <Github size={20} />
                   </a>
@@ -118,6 +132,7 @@ export const ProjectsSection = () => {
           <a
             className="cosmic-button w-fit flex items-center mx-auto gap-2 hover:gap-9"
             target="_blank"
+            rel="noreferrer"
             href="https://www.github.com/cyberdrish"
           >
             Check My GitHub

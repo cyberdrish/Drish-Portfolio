@@ -1,7 +1,6 @@
 import emailjs from "@emailjs/browser";
 import {
   Github,
-  Instagram,
   Linkedin,
   Mail,
   MapPin,
@@ -10,6 +9,7 @@ import {
 } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import useTheme from "../context/useTheme";
 
 // ── EmailJS Configuration ─────────────────────────────────────────────
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -24,48 +24,60 @@ export const ContactSection = () => {
   const formRef = useRef<HTMLFormElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [messageLength, setMessageLength] = useState(0);
+  const { isDarkMode } = useTheme();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(formRef.current!);
-    const email = formData.get("email") as string;
-    const message = formData.get("message") as string;
+    const form = formRef.current;
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const name = String(formData.get("name") ?? "").trim();
+    const email = String(formData.get("email") ?? "").trim();
+    const message = String(formData.get("message") ?? "").trim();
+
+    if (name.length < 2) {
+      toast.warn("Please enter your name.");
+      return;
+    }
 
     if (!EMAIL_REGEX.test(email)) {
-      toast.warn("Please enter a valid email address.", {
-        position: "bottom-right",
-        autoClose: 3000,
-        theme: "dark",
-      });
+      toast.warn("Please enter a valid email address.");
+      return;
+    }
+
+    if (message.length < 10) {
+      toast.warn("Please enter a message of at least 10 characters.");
       return;
     }
 
     if (message.length > MAX_MESSAGE_LENGTH) {
-      toast.warn(`Message must be under ${MAX_MESSAGE_LENGTH} characters.`, {
-        position: "bottom-right",
-        autoClose: 3000,
-        theme: "dark",
-      });
+      toast.warn(`Message must be under ${MAX_MESSAGE_LENGTH} characters.`);
       return;
     }
+
+    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+      toast.error("The contact form is temporarily unavailable.");
+      return;
+    }
+
+    const nameInput = form.elements.namedItem("name") as HTMLInputElement;
+    const emailInput = form.elements.namedItem("email") as HTMLInputElement;
+    const messageInput = form.elements.namedItem("message") as HTMLTextAreaElement;
+    nameInput.value = name;
+    emailInput.value = email;
+    messageInput.value = message;
 
     setIsSubmitting(true);
 
     try {
-      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current!, PUBLIC_KEY);
-      toast.success("Message sent! I'll get back to you soon.", {
-        position: "bottom-right",
-        autoClose: 3000,
-        theme: "dark",
-      });
-      formRef.current!.reset();
+      await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form, PUBLIC_KEY);
+      toast.success("Message sent! I'll get back to you soon.");
+      form.reset();
+      setMessageLength(0);
     } catch {
-      toast.error("Something went wrong. Please try again.", {
-        position: "bottom-right",
-        autoClose: 3000,
-        theme: "dark",
-      });
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -73,15 +85,23 @@ export const ContactSection = () => {
 
   return (
     <section id="contact" className="py-24 px-4 relative bg-secondary/30">
-      <ToastContainer />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        theme={isDarkMode ? "dark" : "light"}
+      />
       <div className="container mx-auto max-w-5xl">
-        <h2 className="text-3xl md:text-4xl">
-          Get In <span className="text-primary">Touch</span>
-        </h2>
+        <div className="mx-auto mb-12 max-w-3xl text-center">
+          <div className="section-kicker mx-auto mb-4">Let us talk</div>
+          <h2 className="text-3xl font-bold md:text-4xl">
+            Need React, TypeScript, dashboards, or{" "}
+            <span className="text-primary">frontend architecture?</span>
+          </h2>
+        </div>
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          {" "}
-          Have a project in mind or want to collaborate ? Feel free to reach
-          out. I'm always open to discussing new opportunities.{" "}
+          I am open to senior frontend roles, dashboard-heavy product work,
+          performance projects, React migrations, design-system work, and
+          frontend collaboration with product teams.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 ">
           <div className="space-y-8">
@@ -92,11 +112,11 @@ export const ContactSection = () => {
                 <div className="p-3 rounded-full bg-primary/10">
                   <Mail className="h-6 w-6 text-primary" />
                 </div>
-                <div className="flex flex-col items-center w-[60%]">
+                <div className="flex min-w-0 flex-1 flex-col items-start text-left">
                   <h4>Email</h4>
                   <a
                     href="mailto:drishmalhotra1997@gmail.com"
-                    className="text-muted-foreground hover:text-primary transition-colors"
+                    className="break-all text-muted-foreground transition-colors hover:text-primary"
                   >
                     drishmalhotra1997@gmail.com
                   </a>
@@ -107,7 +127,7 @@ export const ContactSection = () => {
                 <div className="p-3 rounded-full bg-primary/10">
                   <Phone className="h-6 w-6 text-primary" />
                 </div>
-                <div className="flex flex-col items-center w-[60%]">
+                <div className="flex min-w-0 flex-1 flex-col items-start text-left">
                   <h4>Phone</h4>
                   <a
                     href="tel:+919464669661"
@@ -122,20 +142,22 @@ export const ContactSection = () => {
                 <div className="p-3 rounded-full bg-primary/10">
                   <MapPin className="h-6 w-6 text-primary" />
                 </div>
-                <div className="flex flex-col items-center w-[60%]">
+                <div className="flex min-w-0 flex-1 flex-col items-start text-left">
                   <h4>Location</h4>
-                  <a className="text-muted-foreground hover:text-primary transition-colors">
+                  <p className="text-muted-foreground">
                     Noida, Delhi NCR, India
-                  </a>
+                  </p>
                 </div>
               </div>
             </div>
             <div className="pt-8">
               <h4 className="font-medium mb-4">Connect With Me</h4>
-              <div className="flex space-x-4 justify-center ">
+              <div className="flex justify-start space-x-4">
                 <a
                   href="https://www.linkedin.com/in/drish-malhotra/"
                   target="_blank"
+                  rel="noreferrer"
+                  aria-label="Open Drish Malhotra on LinkedIn"
                   className="hover:text-primary duration-300"
                 >
                   <Linkedin />
@@ -143,16 +165,11 @@ export const ContactSection = () => {
                 <a
                   href="https://github.com/cyberdrish"
                   target="_blank"
+                  rel="noreferrer"
+                  aria-label="Open Drish Malhotra on GitHub"
                   className="hover:text-primary duration-300"
                 >
                   <Github />
-                </a>
-                <a
-                  href="#"
-                  target="_blank"
-                  className="hover:text-primary duration-300"
-                >
-                  <Instagram />
                 </a>
               </div>
             </div>
@@ -172,9 +189,10 @@ export const ContactSection = () => {
                   id="name"
                   name="name"
                   required
+                  minLength={2}
                   className="w-full px-4 py-3 rounded-md border
                  bg-background focus:outline-hidden focus:ring-1 focus:ring-primary"
-                  placeholder="Drish Malhotra....."
+                  placeholder="Your name"
                 />
               </div>
 
@@ -192,7 +210,7 @@ export const ContactSection = () => {
                   required
                   className="w-full px-4 py-3 rounded-md border
                  bg-background focus:outline-hidden focus:ring-1 focus:ring-primary"
-                  placeholder="DrishMalhotra@gmail.com....."
+                  placeholder="name@company.com"
                 />
               </div>
 
@@ -207,13 +225,18 @@ export const ContactSection = () => {
                   id="message"
                   name="message"
                   required
+                  minLength={10}
                   maxLength={MAX_MESSAGE_LENGTH}
+                  aria-describedby="message-count"
                   onChange={(e) => setMessageLength(e.target.value.length)}
                   className="w-full px-4 py-3 rounded-md border
                  bg-background focus:outline-hidden focus:ring-1 focus:ring-primary resize-none"
-                  placeholder=" Hello, I'd like to talk about..."
+                  placeholder="Hello, I'd like to talk about..."
                 />
-                <p className="text-xs text-muted-foreground text-right mt-1">
+                <p
+                  id="message-count"
+                  className="mt-1 text-right text-xs text-muted-foreground"
+                >
                   {messageLength}/{MAX_MESSAGE_LENGTH}
                 </p>
               </div>

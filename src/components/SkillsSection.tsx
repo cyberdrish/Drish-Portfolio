@@ -1,82 +1,187 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import {
+  Bot,
+  Braces,
+  ChartNoAxesCombined,
+  Database,
+  GitBranch,
+  ShieldCheck,
+} from "lucide-react";
 
-const skills = [
-  //frontend
-  { name: "HTML/CSS", level: 95, category: "frontend" },
-  { name: "JavaScript", level: 90, category: "frontend" },
-  { name: "React", level: 90, category: "frontend" },
-  { name: "React Hooks", level: 90, category: "frontend" },
-  { name: "React Router", level: 90, category: "frontend" },
-  { name: "React Query/Tanstack Query", level: 85, category: "frontend" },
-  { name: "Redux Toolkit", level: 85, category: "frontend" },
-  { name: "TypeScript", level: 80, category: "frontend" },
-  { name: "TailwindCss", level: 80, category: "frontend" },
-  { name: "StyleComponent CSS", level: 80, category: "frontend" },
-
-  //Backend
-  { name: "DotNet/C#", level: 70, category: "backend" },
-  { name: "MicrosoftSQL", level: 70, category: "backend" },
-  { name: "GraphQL", level: 60, category: "backend" },
-
-  //Tools
-  { name: "Git/GitHub", level: 90, category: "tools" },
-  { name: "Azure DevOps Server/TFS", level: 90, category: "tools" },
-  { name: "Figma", level: 85, category: "tools" },
-  { name: "VS Code", level: 95, category: "tools" },
+const skillGroups = [
+  {
+    category: "frontend",
+    title: "Frontend Architecture",
+    icon: Braces,
+    skills: [
+      "React.js",
+      "React Hooks",
+      "Next.js",
+      "TypeScript",
+      "Redux Toolkit",
+      "TanStack Query",
+      "React Router",
+      "Tailwind CSS",
+      "Styled Components",
+    ],
+    proof: "Reusable UI modules, component libraries, theming, and responsive dashboard layouts.",
+  },
+  {
+    category: "data",
+    title: "Dashboards and Data",
+    icon: ChartNoAxesCombined,
+    skills: [
+      "Recharts",
+      "Chart.js",
+      "Data tables",
+      "GraphQL",
+      "REST APIs",
+      "Axios",
+      "Real-time panels",
+      "Market analytics",
+    ],
+    proof: "Interactive charts and operational screens for enterprise and energy-trading products.",
+  },
+  {
+    category: "quality",
+    title: "Quality and Accessibility",
+    icon: ShieldCheck,
+    skills: [
+      "WCAG",
+      "Jest",
+      "React Testing Library",
+      "Cypress",
+      "Playwright",
+      "TDD",
+      "ATDD",
+      "Regression testing",
+    ],
+    proof: "Accessible, cross-browser, tested interfaces built for stable release cycles.",
+  },
+  {
+    category: "backend",
+    title: "Backend and Data Stores",
+    icon: Database,
+    skills: [
+      "Supabase",
+      "Firebase",
+      "PostgreSQL",
+      "MySQL",
+      "Microsoft SQL",
+      ".NET basics",
+      "C# basics",
+      "RBAC",
+      "JWT",
+    ],
+    proof: "Enough backend fluency to wire secure API-driven frontend workflows end to end.",
+  },
+  {
+    category: "delivery",
+    title: "DevOps and Delivery",
+    icon: GitBranch,
+    skills: [
+      "Git",
+      "GitHub Actions",
+      "Azure DevOps",
+      "Azure Pipelines",
+      "CI/CD",
+      "Vite",
+      "Webpack",
+      "Release automation",
+    ],
+    proof: "Release-aware frontend work, including Azure pipeline collaboration and weekly cadence.",
+  },
+  {
+    category: "ai",
+    title: "AI-Assisted Workflow",
+    icon: Bot,
+    skills: [
+      "GitHub Copilot",
+      "Cursor",
+      "Claude Code",
+      "ChatGPT",
+      "Google Gemini",
+      "Code reviews",
+      "Debugging",
+      "Mentoring",
+    ],
+    proof: "Modern AI tooling used as an accelerator for delivery, reviews, and troubleshooting.",
+  },
 ];
-const categories = ["all", "frontend", "backend", "tools"];
+
+const categories = ["all", ...skillGroups.map((group) => group.category)];
 
 function SkillsSection() {
   const [activeCategory, setActiveCategory] = useState("all");
 
-  const filteredSkills = skills.filter(
-    (skill) => activeCategory === "all" || skill.category === activeCategory
+  const filteredSkillGroups = useMemo(
+    () =>
+      skillGroups.filter(
+        (group) => activeCategory === "all" || group.category === activeCategory
+      ),
+    [activeCategory]
   );
 
   return (
-    <section id="skills" className="py-24 relative bg-secondary/30">
-      <div className="container mx-auto max-w-5xl">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-          My<span className="text-primary"> Skills</span>
-        </h2>
+    <section id="skills" className="py-24 px-4 relative">
+      <div className="container mx-auto max-w-6xl">
+        <div className="mx-auto mb-12 max-w-3xl text-center">
+          <div className="section-kicker mx-auto mb-4">Capability map</div>
+          <h2 className="text-3xl md:text-4xl font-bold">
+            Skills organized around{" "}
+            <span className="text-primary">the work you hire me for</span>
+          </h2>
+          <p className="mt-5 text-muted-foreground">
+            A broad technical toolkit grouped into practical product
+            capabilities, from frontend architecture to reliable delivery.
+          </p>
+        </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map((category, key) => (
+        <div className="mb-10 flex flex-wrap justify-center gap-3">
+          {categories.map((category) => (
             <button
-              key={key}
+              type="button"
+              key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-5 py-2 rounded-full transition-colors duration-300 capitalize ${
-                activeCategory === category
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary/70 text-foreground hover:bg-primary/10"
+              aria-pressed={activeCategory === category}
+              className={`filter-pill ${
+                activeCategory === category ? "filter-pill-active" : ""
               }`}
             >
               {category}
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredSkills.map((skill, key) => (
-            <div
-              key={key}
-              className="bg-card p-6 rounded-lg shadow-xs card-hover"
-            >
-              <div className="text-left mb-4">
-                <h3 className="font-semibold text-lg">{skill.name}</h3>
-              </div>
-              <div className="w-full bg-secondary/50 h-2 rounded-full overflow-hidden">
-                <div
-                  className="bg-primary h-2 rounded-full origin-left animate-[grow_1.5s_ease-out]"
-                  style={{ width: skill.level + "%" }}
-                />
-              </div>
-              <div className="text-right mt-1">
-                <span className="text-sm text-muted-foreground">
-                  {skill.level}%
-                </span>
-              </div>
-            </div>
-          ))}
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {filteredSkillGroups.map((group) => {
+            const Icon = group.icon;
+            return (
+              <article key={group.title} className="skill-matrix-card">
+                <div className="mb-5 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm capitalize text-muted-foreground">
+                      {group.category}
+                    </p>
+                    <h3 className="mt-1 text-xl font-semibold">{group.title}</h3>
+                  </div>
+                  <div className="rounded-md border border-border bg-secondary/70 p-3">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                </div>
+                <p className="mb-5 text-sm leading-6 text-muted-foreground">
+                  {group.proof}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {group.skills.map((skill) => (
+                    <span key={skill} className="resume-chip">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
