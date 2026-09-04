@@ -6,10 +6,12 @@ import {
   MapPin,
   Phone,
   Send,
+  type LucideIcon,
 } from "lucide-react";
-import { useRef, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import useTheme from "../context/useTheme";
+import { SectionHeader } from "./SectionHeader";
 
 // ── EmailJS Configuration ─────────────────────────────────────────────
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -19,9 +21,39 @@ const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const MAX_MESSAGE_LENGTH = 500;
+const fieldClassName =
+  "w-full rounded-md border bg-background px-4 py-3 focus:outline-hidden focus:ring-1 focus:ring-primary";
+
+type ContactDetail = {
+  label: string;
+  value: string;
+  icon: LucideIcon;
+  href?: string;
+  breakAll?: boolean;
+};
+
+const contactDetails: ContactDetail[] = [
+  {
+    label: "Email",
+    value: "drishmalhotra1997@gmail.com",
+    icon: Mail,
+    href: "mailto:drishmalhotra1997@gmail.com",
+    breakAll: true,
+  },
+  {
+    label: "Phone",
+    value: "+91 (946) 466-9661",
+    icon: Phone,
+    href: "tel:+919464669661",
+  },
+  {
+    label: "Location",
+    value: "Noida, Delhi NCR, India",
+    icon: MapPin,
+  },
+];
 
 export const ContactSection = () => {
-  const formRef = useRef<HTMLFormElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [messageLength, setMessageLength] = useState(0);
   const { isDarkMode } = useTheme();
@@ -29,8 +61,7 @@ export const ContactSection = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const form = formRef.current;
-    if (!form) return;
+    const form = e.currentTarget;
 
     const formData = new FormData(form);
     const name = String(formData.get("name") ?? "").trim();
@@ -90,65 +121,57 @@ export const ContactSection = () => {
         autoClose={3000}
         theme={isDarkMode ? "dark" : "light"}
       />
-      <div className="container mx-auto max-w-5xl">
-        <div className="mx-auto mb-12 max-w-3xl text-center">
-          <div className="section-kicker mx-auto mb-4">Let us talk</div>
-          <h2 className="text-3xl font-bold md:text-4xl">
-            Need React, TypeScript, dashboards, or{" "}
-            <span className="text-primary">frontend architecture?</span>
-          </h2>
-        </div>
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          I am open to senior frontend roles, dashboard-heavy product work,
-          performance projects, React migrations, design-system work, and
-          frontend collaboration with product teams.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 ">
+      <div className="container max-w-5xl">
+        <SectionHeader
+          kicker="Let us talk"
+          title={
+            <>
+              Need React, TypeScript, dashboards, or{" "}
+              <span className="text-primary">frontend architecture?</span>
+            </>
+          }
+          description={
+            <>
+              I am open to senior frontend roles, dashboard-heavy product work,
+              performance projects, React migrations, design-system work, and
+              frontend collaboration with product teams.
+            </>
+          }
+        />
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
           <div className="space-y-8">
             <h3 className="text-2xl font-semibold mb-6">Contact Information</h3>
 
-            <div className="space-y-6 justify-center">
-              <div className="flex items-start space-x-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Mail className="h-6 w-6 text-primary" />
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col items-start text-left">
-                  <h4>Email</h4>
-                  <a
-                    href="mailto:drishmalhotra1997@gmail.com"
-                    className="break-all text-muted-foreground transition-colors hover:text-primary"
-                  >
-                    drishmalhotra1997@gmail.com
-                  </a>
-                </div>
-              </div>
+            <div className="space-y-6">
+              {contactDetails.map((detail) => {
+                const Icon = detail.icon;
 
-              <div className="flex items-start space-x-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Phone className="h-6 w-6 text-primary" />
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col items-start text-left">
-                  <h4>Phone</h4>
-                  <a
-                    href="tel:+919464669661"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    +91 (946) 466-9661
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <MapPin className="h-6 w-6 text-primary" />
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col items-start text-left">
-                  <h4>Location</h4>
-                  <p className="text-muted-foreground">
-                    Noida, Delhi NCR, India
-                  </p>
-                </div>
-              </div>
+                return (
+                  <div key={detail.label} className="flex items-start gap-4">
+                    <div className="rounded-full bg-primary/10 p-3">
+                      <Icon
+                        className="h-6 w-6 text-primary"
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div className="flex min-w-0 flex-1 flex-col items-start text-left">
+                      <h4>{detail.label}</h4>
+                      {detail.href ? (
+                        <a
+                          href={detail.href}
+                          className={`text-muted-foreground transition-colors hover:text-primary ${
+                            detail.breakAll ? "break-all" : ""
+                          }`}
+                        >
+                          {detail.value}
+                        </a>
+                      ) : (
+                        <p className="text-muted-foreground">{detail.value}</p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div className="pt-8">
               <h4 className="font-medium mb-4">Connect With Me</h4>
@@ -176,7 +199,7 @@ export const ContactSection = () => {
           </div>
           <div className="bg-card p-8 rounded-lg shadow-xs">
             <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
-            <form ref={formRef} className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="name"
@@ -190,8 +213,7 @@ export const ContactSection = () => {
                   name="name"
                   required
                   minLength={2}
-                  className="w-full px-4 py-3 rounded-md border
-                 bg-background focus:outline-hidden focus:ring-1 focus:ring-primary"
+                  className={fieldClassName}
                   placeholder="Your name"
                 />
               </div>
@@ -208,8 +230,7 @@ export const ContactSection = () => {
                   id="email"
                   name="email"
                   required
-                  className="w-full px-4 py-3 rounded-md border
-                 bg-background focus:outline-hidden focus:ring-1 focus:ring-primary"
+                  className={fieldClassName}
                   placeholder="name@company.com"
                 />
               </div>
@@ -229,8 +250,7 @@ export const ContactSection = () => {
                   maxLength={MAX_MESSAGE_LENGTH}
                   aria-describedby="message-count"
                   onChange={(e) => setMessageLength(e.target.value.length)}
-                  className="w-full px-4 py-3 rounded-md border
-                 bg-background focus:outline-hidden focus:ring-1 focus:ring-primary resize-none"
+                  className={`${fieldClassName} resize-none`}
                   placeholder="Hello, I'd like to talk about..."
                 />
                 <p
@@ -243,7 +263,7 @@ export const ContactSection = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="cosmic-button w-full flex items-center justify-center gap-2"
+                className="cosmic-button w-full"
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
                 <Send size={16} />

@@ -6,6 +6,8 @@ import {
   Layers3,
   Users,
 } from "lucide-react";
+import { careerMetrics } from "../data/portfolio";
+import { SectionHeader } from "./SectionHeader";
 
 const strengths = [
   {
@@ -49,19 +51,24 @@ const strengths = [
 function AboutSection() {
   return (
     <section id="about" className="py-24 px-4 relative">
-      <div className="container mx-auto max-w-6xl">
-        <div className="mx-auto mb-12 max-w-3xl text-center">
-          <div className="section-kicker mx-auto mb-4">Engineering profile</div>
-          <h2 className="text-3xl md:text-4xl font-bold">
-            A frontend engineer for{" "}
-            <span className="text-primary">serious product surfaces</span>
-          </h2>
-          <p className="mt-5 text-muted-foreground">
-            I do my best work where UI meets business pressure: real-time
-            dashboards, high-frequency data, accessibility, performance, and
-            teams that need reusable frontend systems instead of one-off pages.
-          </p>
-        </div>
+      <div className="container max-w-6xl">
+        <SectionHeader
+          kicker="Engineering profile"
+          title={
+            <>
+              A frontend engineer for{" "}
+              <span className="text-primary">serious product surfaces</span>
+            </>
+          }
+          description={
+            <>
+              I do my best work where UI meets business pressure: real-time
+              dashboards, high-frequency data, accessibility, performance, and
+              teams that need reusable frontend systems instead of one-off
+              pages.
+            </>
+          }
+        />
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-6">
           <div className="bento-card lg:col-span-3 lg:row-span-2">
@@ -73,9 +80,11 @@ function AboutSection() {
             <p className="mt-4 text-muted-foreground">
               I have worked across SaaS products, real-time energy trading
               workflows, enterprise dashboards, and modern React migrations. My
-              work reduced rendering/page-load time by 20%, reduced legacy UI
-              maintenance by 25%, and helped release cadence move from
-              bi-monthly to weekly.
+              work reduced rendering/page-load time by{" "}
+              {careerMetrics.renderingImprovement}, reduced legacy UI maintenance
+              by {careerMetrics.maintenanceReduction}, and helped release cadence
+              move from {careerMetrics.releaseCadence.previous} to{" "}
+              {careerMetrics.releaseCadence.current}.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {["React", "TypeScript", "Next.js", "WCAG", "Azure CI/CD"].map(

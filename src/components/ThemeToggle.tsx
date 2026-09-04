@@ -1,6 +1,9 @@
 import { Moon, Sun } from "lucide-react";
 import useTheme from "../context/useTheme";
 
+const toggleButtonClassName =
+  "inline-flex h-8 w-8 items-center justify-center rounded-sm transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary";
+
 function ThemeToggle() {
   const { accentTheme, isDarkMode, toggleAccentTheme, toggleTheme } = useTheme();
 
@@ -13,7 +16,7 @@ function ThemeToggle() {
       <button
         type="button"
         onClick={toggleAccentTheme}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-sm text-primary transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
+        className={`${toggleButtonClassName} text-primary`}
         aria-label={`Switch to ${accentTheme === "purple" ? "blue" : "purple"} accent`}
         title={`Switch to ${accentTheme === "purple" ? "blue" : "purple"} accent`}
       >
@@ -26,7 +29,7 @@ function ThemeToggle() {
       <button
         type="button"
         onClick={toggleTheme}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-sm text-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-primary"
+        className={`${toggleButtonClassName} text-foreground`}
         aria-label={isDarkMode ? "Switch to light theme" : "Switch to dark theme"}
         title={isDarkMode ? "Switch to light theme" : "Switch to dark theme"}
       >

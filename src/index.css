@@ -12,7 +12,6 @@
 
   --color-card: var(--card);
 
-  --animate-float: float 6s ease-in-out infinite;
   --animate-pulse-subtle: pulse-subtle 4s ease-in-out infinite;
   --animate-fade-in: fade-in 0.7s ease-out forwards;
   --animate-fade-in-delay-1: fade-in 0.7s ease-out 0.2s forwards;
@@ -21,15 +20,6 @@
   --animate-fade-in-delay-4: fade-in 0.7s ease-out 0.8s forwards;
   --animate-meteor: meteor 5s linear infinite both;
 
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
   @keyframes pulse-subtle {
     0%,
     100% {
@@ -128,14 +118,12 @@
 
     --border: hsl(214, 32%, 91%);
 
-    --muted: hsl(240, 4.8%, 95.9%);
     --muted-foreground: hsl(0, 0%, 22%); /* light mode */
   }
 
   :root.accent-blue {
     --primary: hsl(221, 78%, 56%);
     --secondary: hsla(194, 78%, 48%, 0.12);
-    --primary-foreground: hsl(210, 40%, 98%);
     --gradient-start: #22d3ee;
     --gradient-middle: #3b82f6;
     --ambient-primary: 34 211 238;
@@ -165,14 +153,12 @@
 
     --border: hsl(217, 33%, 20%);
 
-    --muted: hsl(240, 3.7%, 15.9%);
     --muted-foreground: hsl(240, 5%, 72%); /* dark mode */
   }
 
   .dark.accent-blue {
     --primary: hsl(194, 90%, 57%);
     --secondary: hsla(221, 78%, 56%, 0.14);
-    --primary-foreground: hsl(222, 47%, 11%);
   }
 
   * {
@@ -224,13 +210,6 @@
 
 @utility card-hover {
   @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
-}
-
-@utility gradient-border {
-  @apply relative rounded-md;
-  background: linear-gradient(to right, var(--card), var(--card));
-  background-clip: padding-box;
-  border: 1px solid transparent;
 }
 
 @utility cosmic-button {
@@ -392,8 +371,7 @@
   }
 
   .timeline-index-mobile {
-    @apply inline-flex h-7 min-w-7 items-center justify-center rounded-md border border-primary/25 bg-secondary/70 px-1.5 text-xs font-bold text-primary;
-    @apply md:hidden;
+    @apply inline-flex h-7 min-w-7 items-center justify-center rounded-md border border-primary/25 bg-secondary/70 px-1.5 text-xs font-bold text-primary md:hidden;
   }
 
   .credential-row {
@@ -507,11 +485,4 @@
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-#root {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0;
-  text-align: left;
 }

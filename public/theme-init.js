@@ -1,4 +1,6 @@
 (() => {
+  // Keep this in sync with ThemeContext. It runs before React renders so the
+  // saved appearance is applied without flashing the default theme.
   const root = document.documentElement;
 
   try {

@@ -1,5 +1,6 @@
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
 import useTheme from "../context/useTheme";
+import { SectionHeader } from "./SectionHeader";
 
 const projects = [
   {
@@ -60,18 +61,23 @@ export const ProjectsSection = () => {
 
   return (
     <section id="projects" className="py-24 px-4 relative">
-      <div className="container mx-auto max-w-6xl">
-        <div className="mx-auto mb-12 max-w-3xl text-center">
-          <div className="section-kicker mx-auto mb-4">Selected work</div>
-          <h2 className="text-3xl md:text-4xl font-bold">
-            Projects built around{" "}
-            <span className="text-primary">real product workflows</span>
-          </h2>
-          <p className="mt-5 text-muted-foreground">
-            Dashboard workflows, authentication, API-driven experiences, state
-            management, responsive UI, and production deployment in practice.
-          </p>
-        </div>
+      <div className="container max-w-6xl">
+        <SectionHeader
+          kicker="Selected work"
+          title={
+            <>
+              Projects built around{" "}
+              <span className="text-primary">real product workflows</span>
+            </>
+          }
+          description={
+            <>
+              Dashboard workflows, authentication, API-driven experiences,
+              state management, responsive UI, and production deployment in
+              practice.
+            </>
+          }
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project) => (
             <div
@@ -80,9 +86,7 @@ export const ProjectsSection = () => {
             >
               <div className="relative h-52 overflow-hidden">
                 <img
-                  src={
-                    isDarkMode === true ? project.imageDark : project.imageLight
-                  }
+                  src={isDarkMode ? project.imageDark : project.imageLight}
                   alt={project.title}
                   loading="lazy"
                   decoding="async"
@@ -128,9 +132,9 @@ export const ProjectsSection = () => {
             </div>
           ))}
         </div>
-        <div className="text-center mt-12 ">
+        <div className="mt-12 text-center">
           <a
-            className="cosmic-button w-fit flex items-center mx-auto gap-2 hover:gap-9"
+            className="cosmic-button hover:gap-9"
             target="_blank"
             rel="noreferrer"
             href="https://www.github.com/cyberdrish"

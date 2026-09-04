@@ -1,4 +1,5 @@
 import { Award, Building2, GraduationCap, TrendingUp } from "lucide-react";
+import { careerMetrics } from "../data/portfolio";
 
 const roles = [
   {
@@ -12,7 +13,10 @@ const roles = [
       "Built real-time visualization panels, interactive charts, and data tables for faster operational decisions.",
       "Led frontend reviews and mentored junior engineers on design-system consistency, WCAG, testing, and AI-assisted development.",
     ],
-    metrics: ["20% rendering improvement", "Sub-second operational updates"],
+    metrics: [
+      `${careerMetrics.renderingImprovement} rendering improvement`,
+      "Sub-second operational updates",
+    ],
   },
   {
     company: "Open Access Technology India Pvt Ltd",
@@ -25,7 +29,10 @@ const roles = [
       "Migrated Backbone.js and Ext JS modules into modern React components and Hooks.",
       "Partnered with UX, QA, DevOps, product, and engineering to align delivery with business requirements.",
     ],
-    metrics: ["25% less UI maintenance", "Weekly release cadence"],
+    metrics: [
+      `${careerMetrics.maintenanceReduction} less UI maintenance`,
+      `${careerMetrics.releaseCadence.current} release cadence`,
+    ],
   },
 ];
 
@@ -40,7 +47,7 @@ const credentials = [
 export const ExperienceSection = () => {
   return (
     <section id="experience" className="relative px-4 py-24 bg-secondary/25">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container max-w-6xl">
         <div className="mb-12 flex flex-col gap-5 text-left md:flex-row md:items-end md:justify-between">
           <div>
             <div className="section-kicker mb-4">Career trace</div>

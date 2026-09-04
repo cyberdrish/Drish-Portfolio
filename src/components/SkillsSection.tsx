@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   Bot,
   Braces,
@@ -7,6 +7,8 @@ import {
   GitBranch,
   ShieldCheck,
 } from "lucide-react";
+import { careerMetrics } from "../data/portfolio";
+import { SectionHeader } from "./SectionHeader";
 
 const skillGroups = [
   {
@@ -89,7 +91,7 @@ const skillGroups = [
       "Webpack",
       "Release automation",
     ],
-    proof: "Release-aware frontend work, including Azure pipeline collaboration and weekly cadence.",
+    proof: `Release-aware frontend work, including Azure pipeline collaboration and ${careerMetrics.releaseCadence.current} cadence.`,
   },
   {
     category: "ai",
@@ -114,28 +116,28 @@ const categories = ["all", ...skillGroups.map((group) => group.category)];
 function SkillsSection() {
   const [activeCategory, setActiveCategory] = useState("all");
 
-  const filteredSkillGroups = useMemo(
-    () =>
-      skillGroups.filter(
-        (group) => activeCategory === "all" || group.category === activeCategory
-      ),
-    [activeCategory]
+  const filteredSkillGroups = skillGroups.filter(
+    (group) => activeCategory === "all" || group.category === activeCategory,
   );
 
   return (
     <section id="skills" className="py-24 px-4 relative">
-      <div className="container mx-auto max-w-6xl">
-        <div className="mx-auto mb-12 max-w-3xl text-center">
-          <div className="section-kicker mx-auto mb-4">Capability map</div>
-          <h2 className="text-3xl md:text-4xl font-bold">
-            Skills organized around{" "}
-            <span className="text-primary">the work you hire me for</span>
-          </h2>
-          <p className="mt-5 text-muted-foreground">
-            A broad technical toolkit grouped into practical product
-            capabilities, from frontend architecture to reliable delivery.
-          </p>
-        </div>
+      <div className="container max-w-6xl">
+        <SectionHeader
+          kicker="Capability map"
+          title={
+            <>
+              Skills organized around{" "}
+              <span className="text-primary">the work you hire me for</span>
+            </>
+          }
+          description={
+            <>
+              A broad technical toolkit grouped into practical product
+              capabilities, from frontend architecture to reliable delivery.
+            </>
+          }
+        />
 
         <div className="mb-10 flex flex-wrap justify-center gap-3">
           {categories.map((category) => (

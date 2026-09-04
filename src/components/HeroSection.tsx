@@ -8,11 +8,18 @@ import {
   Sparkles,
   Terminal,
 } from "lucide-react";
+import { careerMetrics } from "../data/portfolio";
 
 const impactMetrics = [
-  { value: "5+", label: "years building frontend products" },
-  { value: "20%", label: "faster rendering and page loads" },
-  { value: "25%", label: "less legacy UI maintenance" },
+  { value: careerMetrics.years, label: "years building frontend products" },
+  {
+    value: careerMetrics.renderingImprovement,
+    label: "faster rendering and page loads",
+  },
+  {
+    value: careerMetrics.maintenanceReduction,
+    label: "less legacy UI maintenance",
+  },
 ];
 
 const liveSignals = [
@@ -50,7 +57,7 @@ function HeroSection() {
       id="hero"
       className="relative min-h-screen flex flex-col items-center justify-center px-4 pb-20 pt-28"
     >
-      <div className="container max-w-6xl mx-auto z-10">
+      <div className="container z-10 max-w-6xl">
         <div className="grid min-h-[72vh] grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="space-y-8 text-left">
             <div className="section-kicker opacity-0 animate-fade-in">
@@ -70,10 +77,10 @@ function HeroSection() {
               </h1>
               <p className="max-w-2xl text-base leading-8 text-muted-foreground md:text-xl opacity-0 animate-fade-in-delay-4">
                 I am Drish Malhotra, a React.js, TypeScript, and Next.js
-                specialist with 5+ years of experience across SaaS products,
-                enterprise dashboards, design systems, real-time energy trading
-                tools, performance optimization, WCAG accessibility, and Azure
-                CI/CD delivery.
+                specialist with {careerMetrics.years} years of experience across
+                SaaS products, enterprise dashboards, design systems, real-time
+                energy trading tools, performance optimization, WCAG
+                accessibility, and Azure CI/CD delivery.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -99,8 +106,7 @@ function HeroSection() {
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-5">
-            <div className="glass-panel w-full overflow-hidden p-4 text-left md:p-6">
+          <div className="glass-panel w-full overflow-hidden p-4 text-left md:p-6">
               <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
                   <p className="text-sm text-muted-foreground">
@@ -160,12 +166,11 @@ function HeroSection() {
                   aria-hidden="true"
                 />
                 <p>
-                  <span>deploy://</span> Azure pipeline cadence improved from
-                  bi-monthly to weekly.
+                  <span>deploy://</span> Azure pipeline cadence improved from{" "}
+                  {careerMetrics.releaseCadence.previous} to{" "}
+                  {careerMetrics.releaseCadence.current}.
                 </p>
               </div>
-            </div>
-
           </div>
         </div>
       </div>

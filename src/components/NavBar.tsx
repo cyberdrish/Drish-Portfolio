@@ -64,7 +64,7 @@ export const NavBar = () => {
         ...(navigation?.querySelectorAll<HTMLAnchorElement>("a") ?? []),
       ].filter(
         (element): element is HTMLAnchorElement | HTMLButtonElement =>
-          element !== null
+          element !== null,
       );
 
       const firstElement = focusableElements[0];
@@ -72,7 +72,7 @@ export const NavBar = () => {
       if (!firstElement || !lastElement) return;
 
       const currentIndex = focusableElements.findIndex(
-        (element) => element === document.activeElement
+        (element) => element === document.activeElement,
       );
       const nextIndex = event.shiftKey
         ? currentIndex <= 0
@@ -95,10 +95,10 @@ export const NavBar = () => {
 
   return (
     <nav
-      className={`fixed w-full z-40 transition-all duration-50 ${
+      className={`fixed inset-x-0 top-0 z-40 border-b transition-[padding,background-color,border-color,box-shadow,backdrop-filter] duration-300 ${
         isScrolled && !isMenuOpen
-          ? "border-b border-border/60 bg-background/85 py-3 shadow-sm backdrop-blur-xl"
-          : "py-5"
+          ? "border-border/70 bg-background/40 py-3 shadow-[0_8px_28px_rgb(15_23_42/0.10)] backdrop-blur-md backdrop-saturate-150"
+          : "border-transparent bg-transparent py-5"
       }`}
     >
       <div className="container flex h-10 items-center justify-between">

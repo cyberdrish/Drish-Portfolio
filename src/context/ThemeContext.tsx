@@ -2,6 +2,9 @@ import { createContext, useEffect, useState, type ReactNode } from "react";
 
 type AccentTheme = "purple" | "blue";
 
+// The initial values mirror public/theme-init.js, which applies the saved
+// appearance before React renders to prevent a flash of the default theme.
+
 const getInitialTheme = () => {
   try {
     return localStorage.getItem("theme") !== "light";
