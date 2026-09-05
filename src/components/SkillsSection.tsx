@@ -7,6 +7,7 @@ import {
   GitBranch,
   ShieldCheck,
 } from "lucide-react";
+import { setSessionTag, trackEvent } from "../analytics/clarity";
 import { careerMetrics } from "../data/portfolio";
 import { SectionHeader } from "./SectionHeader";
 
@@ -116,6 +117,12 @@ const categories = ["all", ...skillGroups.map((group) => group.category)];
 function SkillsSection() {
   const [activeCategory, setActiveCategory] = useState("all");
 
+  const selectCategory = (category: string) => {
+    setActiveCategory(category);
+    setSessionTag("skill_interest", category);
+    trackEvent("skill_filter_" + category);
+  };
+
   const filteredSkillGroups = skillGroups.filter(
     (group) => activeCategory === "all" || group.category === activeCategory,
   );
@@ -144,7 +151,7 @@ function SkillsSection() {
             <button
               type="button"
               key={category}
-              onClick={() => setActiveCategory(category)}
+              onClick={() => selectCategory(category)}
               aria-pressed={activeCategory === category}
               className={`filter-pill ${
                 activeCategory === category ? "filter-pill-active" : ""

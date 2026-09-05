@@ -1,10 +1,12 @@
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
+import { trackEvent } from "../analytics/clarity";
 import useTheme from "../context/useTheme";
 import { SectionHeader } from "./SectionHeader";
 
 const projects = [
   {
     id: 1,
+    analyticsId: "hotel_booking",
     title: "Hotel Booking Website",
     description:
       "A guest-facing reservation product with date selection, party sizing, availability checks, bookings, and a responsive dashboard experience.",
@@ -24,6 +26,7 @@ const projects = [
   },
   {
     id: 2,
+    analyticsId: "hotel_management",
     title: "Hotel Management",
     description:
       "A staff dashboard for secure login, booking operations, room inventory, pricing updates, account workflows, and visual business reporting.",
@@ -44,6 +47,7 @@ const projects = [
   },
   {
     id: 3,
+    analyticsId: "restaurant_ordering",
     title: "Restaurant Food Order",
     description:
       "A customer ordering flow with menu browsing, cart management, checkout, dynamic UI states, and external API integration.",
@@ -113,6 +117,9 @@ export const ProjectsSection = () => {
                     href={project.demoUrl}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() =>
+                      trackEvent("project_demo_open_" + project.analyticsId)
+                    }
                     aria-label={`Open ${project.title} live demo`}
                     className="icon-link"
                   >
@@ -122,6 +129,9 @@ export const ProjectsSection = () => {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() =>
+                      trackEvent("project_github_open_" + project.analyticsId)
+                    }
                     aria-label={`Open ${project.title} GitHub repository`}
                     className="icon-link"
                   >
@@ -138,6 +148,7 @@ export const ProjectsSection = () => {
             target="_blank"
             rel="noreferrer"
             href="https://www.github.com/cyberdrish"
+            onClick={() => trackEvent("github_profile_open_projects")}
           >
             Check My GitHub
             <ArrowRight size={16} />

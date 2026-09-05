@@ -1,5 +1,6 @@
 import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { trackEvent } from "../analytics/clarity";
 import ThemeToggle from "./ThemeToggle";
 
 const navItems = [
@@ -16,6 +17,15 @@ export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileNavigationRef = useRef<HTMLDivElement>(null);
+
+  const trackNavigation = (name: string, placement: "desktop" | "mobile") => {
+    trackEvent("nav_" + name.toLowerCase() + "_" + placement);
+  };
+
+  const toggleMobileMenu = () => {
+    trackEvent(isMenuOpen ? "mobile_menu_close_button" : "mobile_menu_open");
+    setIsMenuOpen((value) => !value);
+  };
 
   useEffect(() => {
     const handleScrolled = () => {
@@ -52,6 +62,7 @@ export const NavBar = () => {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        trackEvent("mobile_menu_close_escape");
         setIsMenuOpen(false);
         window.requestAnimationFrame(() => menuButtonRef.current?.focus());
         return;
@@ -105,6 +116,7 @@ export const NavBar = () => {
         <a
           className="flex h-10 shrink-0 items-center text-xl font-bold text-primary"
           href="#hero"
+          onClick={() => trackEvent("logo_click")}
         >
           <span className="relative z-10">
             <span className="text-glow text-foreground">DrishDev</span>
@@ -118,6 +130,7 @@ export const NavBar = () => {
               <a
                 key={item.href}
                 href={item.href}
+                onClick={() => trackNavigation(item.name, "desktop")}
                 className="inline-flex h-10 items-center px-3 text-foreground/80 transition-colors duration-300 hover:text-primary lg:px-4"
               >
                 {item.name}
@@ -128,7 +141,7 @@ export const NavBar = () => {
           <button
             ref={menuButtonRef}
             type="button"
-            onClick={() => setIsMenuOpen((val) => !val)}
+            onClick={toggleMobileMenu}
             className="z-50 inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden"
             aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
             aria-expanded={isMenuOpen}
@@ -158,8 +171,12 @@ export const NavBar = () => {
                   key={item.href}
                   href={item.href}
                   tabIndex={isMenuOpen ? 0 : -1}
+                  onClick={() => {
+                    trackNavigation(item.name, "mobile");
+                    trackEvent("mobile_menu_destination_selected");
+                    setIsMenuOpen(false);
+                  }}
                   className="text-foreground/80 hover:text-primary transition-colors duration-300"
-                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
                 </a>

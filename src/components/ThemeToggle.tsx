@@ -1,4 +1,5 @@
 import { Moon, Sun } from "lucide-react";
+import { setSessionTag, trackEvent } from "../analytics/clarity";
 import useTheme from "../context/useTheme";
 
 const toggleButtonClassName =
@@ -6,6 +7,20 @@ const toggleButtonClassName =
 
 function ThemeToggle() {
   const { accentTheme, isDarkMode, toggleAccentTheme, toggleTheme } = useTheme();
+
+  const handleAccentToggle = () => {
+    const nextAccent = accentTheme === "purple" ? "blue" : "purple";
+    toggleAccentTheme();
+    setSessionTag("current_accent", nextAccent);
+    trackEvent("accent_changed_" + nextAccent);
+  };
+
+  const handleThemeToggle = () => {
+    const nextTheme = isDarkMode ? "light" : "dark";
+    toggleTheme();
+    setSessionTag("current_theme", nextTheme);
+    trackEvent("theme_changed_" + nextTheme);
+  };
 
   return (
     <div
@@ -15,7 +30,7 @@ function ThemeToggle() {
     >
       <button
         type="button"
-        onClick={toggleAccentTheme}
+        onClick={handleAccentToggle}
         className={`${toggleButtonClassName} text-primary`}
         aria-label={`Switch to ${accentTheme === "purple" ? "blue" : "purple"} accent`}
         title={`Switch to ${accentTheme === "purple" ? "blue" : "purple"} accent`}
@@ -28,7 +43,7 @@ function ThemeToggle() {
       <span className="h-5 w-px bg-border" aria-hidden="true" />
       <button
         type="button"
-        onClick={toggleTheme}
+        onClick={handleThemeToggle}
         className={`${toggleButtonClassName} text-foreground`}
         aria-label={isDarkMode ? "Switch to light theme" : "Switch to dark theme"}
         title={isDarkMode ? "Switch to light theme" : "Switch to dark theme"}

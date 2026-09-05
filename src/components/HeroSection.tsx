@@ -8,6 +8,7 @@ import {
   Sparkles,
   Terminal,
 } from "lucide-react";
+import { trackEvent } from "../analytics/clarity";
 import { careerMetrics } from "../data/portfolio";
 
 const impactMetrics = [
@@ -84,7 +85,11 @@ function HeroSection() {
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <a href="#projects" className="cosmic-button">
+              <a
+                href="#projects"
+                className="cosmic-button"
+                onClick={() => trackEvent("hero_case_studies_click")}
+              >
                 View case studies
                 <ArrowRight size={18} />
               </a>
@@ -92,6 +97,7 @@ function HeroSection() {
                 href="/Drish_Malhotra_Resume.pdf"
                 className="outline-button"
                 download
+                onClick={() => trackEvent("resume_download")}
               >
                 Download resume
               </a>
@@ -186,6 +192,7 @@ function HeroSection() {
         aria-hidden={!showScrollCue}
         tabIndex={showScrollCue ? 0 : -1}
         title="Scroll to About"
+        onClick={() => trackEvent("hero_scroll_cue_click")}
       >
         <span className="scroll-beacon-core" aria-hidden="true">
           <ChevronDown className="h-5 w-5" strokeWidth={1.75} />

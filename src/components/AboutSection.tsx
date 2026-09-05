@@ -6,6 +6,7 @@ import {
   Layers3,
   Users,
 } from "lucide-react";
+import { trackEvent } from "../analytics/clarity";
 import { careerMetrics } from "../data/portfolio";
 import { SectionHeader } from "./SectionHeader";
 
@@ -96,10 +97,18 @@ function AboutSection() {
               )}
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href="#experience" className="cosmic-button">
+              <a
+                href="#experience"
+                className="cosmic-button"
+                onClick={() => trackEvent("about_experience_click")}
+              >
                 Explore experience
               </a>
-              <a href="#contact" className="outline-button">
+              <a
+                href="#contact"
+                className="outline-button"
+                onClick={() => trackEvent("about_contact_click")}
+              >
                 Start a conversation
               </a>
             </div>

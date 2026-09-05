@@ -8,8 +8,9 @@ import {
   Send,
   type LucideIcon,
 } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { trackEvent } from "../analytics/clarity";
 import useTheme from "../context/useTheme";
 import { SectionHeader } from "./SectionHeader";
 
@@ -56,10 +57,18 @@ const contactDetails: ContactDetail[] = [
 export const ContactSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [messageLength, setMessageLength] = useState(0);
+  const hasStartedForm = useRef(false);
   const { isDarkMode } = useTheme();
+
+  const handleFormFocus = () => {
+    if (hasStartedForm.current) return;
+    hasStartedForm.current = true;
+    trackEvent("contact_form_started");
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    trackEvent("contact_form_submit_attempt");
 
     const form = e.currentTarget;
 
@@ -69,26 +78,31 @@ export const ContactSection = () => {
     const message = String(formData.get("message") ?? "").trim();
 
     if (name.length < 2) {
+      trackEvent("contact_validation_name_failed");
       toast.warn("Please enter your name.");
       return;
     }
 
     if (!EMAIL_REGEX.test(email)) {
+      trackEvent("contact_validation_email_failed");
       toast.warn("Please enter a valid email address.");
       return;
     }
 
     if (message.length < 10) {
+      trackEvent("contact_validation_message_short");
       toast.warn("Please enter a message of at least 10 characters.");
       return;
     }
 
     if (message.length > MAX_MESSAGE_LENGTH) {
+      trackEvent("contact_validation_message_long");
       toast.warn(`Message must be under ${MAX_MESSAGE_LENGTH} characters.`);
       return;
     }
 
     if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+      trackEvent("contact_configuration_missing");
       toast.error("The contact form is temporarily unavailable.");
       return;
     }
@@ -104,10 +118,12 @@ export const ContactSection = () => {
 
     try {
       await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form, PUBLIC_KEY);
+      trackEvent("contact_form_success");
       toast.success("Message sent! I'll get back to you soon.");
       form.reset();
       setMessageLength(0);
     } catch {
+      trackEvent("contact_form_failure");
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -159,6 +175,13 @@ export const ContactSection = () => {
                       {detail.href ? (
                         <a
                           href={detail.href}
+                          onClick={() =>
+                            trackEvent(
+                              detail.label === "Email"
+                                ? "contact_email_click"
+                                : "contact_phone_click",
+                            )
+                          }
                           className={`text-muted-foreground transition-colors hover:text-primary ${
                             detail.breakAll ? "break-all" : ""
                           }`}
@@ -182,6 +205,7 @@ export const ContactSection = () => {
                   rel="noreferrer"
                   aria-label="Open Drish Malhotra on LinkedIn"
                   className="hover:text-primary duration-300"
+                  onClick={() => trackEvent("contact_linkedin_click")}
                 >
                   <Linkedin />
                 </a>
@@ -191,6 +215,7 @@ export const ContactSection = () => {
                   rel="noreferrer"
                   aria-label="Open Drish Malhotra on GitHub"
                   className="hover:text-primary duration-300"
+                  onClick={() => trackEvent("contact_github_click")}
                 >
                   <Github />
                 </a>
@@ -199,7 +224,12 @@ export const ContactSection = () => {
           </div>
           <div className="bg-card p-8 rounded-lg shadow-xs">
             <h3 className="text-2xl font-semibold mb-6">Send a Message</h3>
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form
+              className="space-y-6"
+              onSubmit={handleSubmit}
+              onFocusCapture={handleFormFocus}
+              data-clarity-mask="true"
+            >
               <div>
                 <label
                   htmlFor="name"

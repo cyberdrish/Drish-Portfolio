@@ -7,8 +7,11 @@ import { NavBar } from "../components/NavBar";
 import { ProjectsSection } from "../components/ProjectsSection";
 import SkillsSection from "../components/SkillsSection";
 import StarBackground from "../components/StarBackground";
+import { usePortfolioTracking } from "../hooks/usePortfolioTracking";
 
 export const Home = () => {
+  usePortfolioTracking();
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* background effects */}
